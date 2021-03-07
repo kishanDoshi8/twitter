@@ -17,7 +17,7 @@ router.post('/' , (req, res) => {
     // Validation
     if(!email || !password) return res.status(400).json({ success: false, msg: 'Please enter all fields' });
 
-    let invalidErrorMsg = 'Invalid Credentials';
+    let invalidErrorMsg = 'Invalid Credentials.';
     User.findOne({ email })
         .then(user => {
             if(!user) return res.status(401).json({ success: false, msg: invalidErrorMsg })
@@ -34,7 +34,7 @@ router.post('/' , (req, res) => {
                         jwtSecret,
                         // { expiresIn: 21600 },
                         (err, token) => {
-                            res.status(200).json({ token, user })
+                            res.status(200).json({ success: true, token, user })
                         }
                     )
                 })
