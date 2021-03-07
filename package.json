@@ -1,0 +1,12 @@
+{
+  "name": "twitter",
+  "version": "1.0.0",
+  "description": "Speer backend assessment (twitter)",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Kishan Doshi",
+  "license": "MIT"
+}
