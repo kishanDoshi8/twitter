@@ -23,6 +23,13 @@ mongoose.connect(mongoURI, {
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
+
+// For testing -> running tests when server is running on the same port
+// if(!module.parent) {
+//     app.listen(port, () => console.log(`Server started on post: ${port}`));
+// }
 
 app.listen(port, () => console.log(`Server started on post: ${port}`));
+
+module.exports = app;

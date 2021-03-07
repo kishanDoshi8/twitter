@@ -34,7 +34,7 @@ router.post('/' , (req, res) => {
                         jwtSecret,
                         // { expiresIn: 21600 },
                         (err, token) => {
-                            res.json({ token, user })
+                            res.status(200).json({ token, user })
                         }
                     )
                 })

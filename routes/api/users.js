@@ -28,11 +28,15 @@ router.post('/', (req, res) => {
     let { name, email, password, confirmPassword } = req.body;
 
     // Validation
-    if(!name || !email || !password || !confirmPassword) return res.status(400).json({ success: false, msg: 'Please enter all fields' });
+    if(!name || !email || !password || !confirmPassword) return res.status(400).json({ success: false, msg: 'Please enter all fields.' });
     
+    // Email validation
+    let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!email.match(regexEmail)) return res.status(400).json({ success: false, msg: 'Please enter a valid email address.'})
+
     User.findOne({ email })
         .then(user => {
-            if(user) return res.status(400).json({ success: false, msg: 'User already exists' })
+            if(user) return res.status(400).json({ success: false, msg: 'User already exists.' })
 
             // Password validation
             if(password === confirmPassword) {
