@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const users = require('./routes/api/users');
+const auth = require('./routes/api/auth');
 
 require("dotenv").config();
 
@@ -19,7 +20,8 @@ mongoose.connect(mongoURI, {
     .then(() => console.log('MongoDB Connected...'))
     .catch(err => console.log(err));
 
-app.use('/api/users', users)
+app.use('/api/users', users);
+app.use('/api/auth', auth);
 
 const port = process.env.PORT || 5000;
 
