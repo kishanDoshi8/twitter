@@ -20,7 +20,7 @@ describe('User API Tests...', () => {
             .post('/api/users')
             .send(newUser)
             .end((err, res) => {
-                res.should.have.status(200);
+                res.should.have.status(201);
                 res.body.should.have.property('success').eq(true);
                 res.body.should.have.property('user').be.a('object');
                 res.body.should.have.property('user');

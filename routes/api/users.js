@@ -58,7 +58,7 @@ router.post('/', (req, res) => {
                             let newUser = new User({ name, email, password: hash });
                             // Registering the user
                             newUser.save()
-                                .then(user => res.status(200).json({ success: true, user}))
+                                .then(user => res.status(201).json({ success: true, user}))
                                 .catch(err => res.status(500).json({ success: false, msg: err }))
                         })
                     })
