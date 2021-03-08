@@ -2,17 +2,40 @@ const mongoose = require('mongoose');
 const ObjectID = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;
 
+// Create commect schema
+const CommentSchema = new Schema({
+    userId: {
+        type: String,
+        required: true,
+    },
+    commentBody: {
+        type: String,
+        required: true,
+        validate: {
+            validator: body => {
+                return body.length <= 280;
+            },
+            message: () => `Comment should not exceed of length 280`,
+        }
+    },
+    likes: {
+        type: Number,
+        default: 0,
+    },
+    comments: [{
+        type: ObjectID,
+        ref: 'CommentSchema',
+    }],
+    tags: [String],
+    retweet: [String],
+}, {
+    timestamps: true,
+})
+
 // Create User Schema
 const TweetSchema = new Schema({
     userId: {
         type: String,
-        validate: {
-            // Check if this is a valid objectId
-            validator: function (user) {
-                return user == new ObjectID(user);
-            },
-            message: props => `${props.value} is not a valid userId`,
-        },
         required: true,
     },
     tweetBody: {
@@ -29,49 +52,12 @@ const TweetSchema = new Schema({
         type: Number,
         default: 0,
     },
-    comments: [{
-        userId: {
-            type: String,
-            validate: [
-                // Check if this is a valid objectId
-                function (user) {
-                    console.log(user);
-                    console.log(new ObjectID(user));
-                    return user == new ObjectID(user);
-                },
-                props => `${props.value} is not a valid userId`,
-            ],
-            required: true,
-        },
-        commentBody: {
-            type: String,
-            required: true,
-        },
-        likes: {
-            type: Number,
-            default: 0,
-        },
-        timestamp: {
-            type: Date,
-            default: Date.now,
-        }
-    }],
+    comments: [CommentSchema],
     tags: [String],
     // Save user Ids
-    retweets: [{
-        type: String,
-        validate: {
-            // Check if this is a valid objectId
-            validator: function (user) {
-                return user == new ObjectID(user);
-            },
-            message: props => `${props.value} is not a valid userId`,
-        },
-    }],
-    timestamp: {
-        type: Date,
-        default: Date.now,
-    },
+    retweets: [String],
+}, {
+    timestamps: true,
 });
 
 module.exports = Tweet = mongoose.model('tweet', TweetSchema);

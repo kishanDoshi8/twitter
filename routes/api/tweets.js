@@ -27,15 +27,46 @@ router.get('/:id', auth, (req, res) => {
         .catch(err => res.status(404).json({ success: false, msg: err }))
 });
 
-// @route   Post api/tweet 
+// @route   Post api/tweets
 // @Desc    Create a tweet
 // @Access  Private
 router.post('/', auth, (req, res) => {
     const newTweet = new Tweet( req.body );
-    // if(req.body.tweetBody.length > 280) return res.status(400).json({ success: false, msg: 'Tweet cannot have more than 280 characters.'})
+    if(req.body.tweetBody.length > 280) return res.status(400).json({ success: false, msg: 'Tweet cannot have more than 280 characters.'})
     newTweet.save()
         .then(tweet => res.status(201).json({ success: true, tweet }))
         .catch(err => res.status(400).json({ success: false, msg: err.message }));
+});
+
+// @route   GET api/tweets/comments/:id
+// @Desc    Get all comments of a post by id
+// @Access  Private
+router.post('/comments/:id', auth, (req, res) => {
+    new Tweet.findById(req.params.id)
+        .then(tweet => {
+            if(!tweet) return res.status(404).json({ success: false, msg: 'No comments found.' })
+            return res.status(200).json({success: true, comments: tweet.comments})
+        })
+        .catch(err => res.status(500).json({ success: false, msg: err }))
+});
+
+// @route   PSOT api/tweets/comments/:id
+// @Desc    POST a comment to a post by id
+// @Access  Private
+router.post('/comments/:id', auth, (req, res) => {
+    const comment = {
+        userId: req.user.id,
+        commentBody: req.body.comment,
+    }
+
+    new Tweet.findOneAndUpdate({ _id: req.params.id }, {
+        $push: {
+            comments: comment,
+        }
+    }).then(tweet => {
+            return res.status(200).json({success: true, comments: tweet.comments})
+        })
+        .catch(err => res.status(404).json({ success: false, msg: err }))
 });
 
 // @route   Put api/tweets 
