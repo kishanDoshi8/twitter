@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const users = require('./routes/api/users');
 const auth = require('./routes/api/auth');
 const tweets = require('./routes/api/tweets');
+const dms = require('./routes/api/dms');
 
 require("dotenv").config();
 
@@ -24,6 +25,7 @@ mongoose.connect(mongoURI, {
 app.use('/api/users', users);
 app.use('/api/auth', auth);
 app.use('/api/tweets', tweets);
+app.use('/api/dms', dms);
 
 const port = process.env.PORT || 3000;
 
