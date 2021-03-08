@@ -7,6 +7,8 @@ chai.should();
 
 describe('Tweets API Tests...', () => {
 
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDUyODAzZWJhMmFiM2U2NGJmODU5YyIsImlhdCI6MTYxNTE2NTUyOH0.3-wnM0Pnna9dhJK8hkZZ6p7vMRdy4sgdUEg4hriYU3I';
+
     /**
      * GET /api/tweets
      */
@@ -15,6 +17,7 @@ describe('Tweets API Tests...', () => {
         it('It should GET all tweets successfully', done => {
             chai.request(server)
                 .get('/api/tweets')
+                .set('x-auth-token', token)
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.have.property('success').eq(true);
@@ -27,6 +30,7 @@ describe('Tweets API Tests...', () => {
             const id = '60456cea3d79f90b50cfddfa';
             chai.request(server)
                 .get('/api/tweets/' + id)
+                .set('x-auth-token', token)
                 .end((err, res) => {
                     res.should.have.status(200);
                     res.body.should.have.property('success').eq(true);
@@ -41,8 +45,34 @@ describe('Tweets API Tests...', () => {
             const id = '60455b92851a2c265cad8d54';
             chai.request(server)
                 .get('/api/tweets/' + id)
+                .set('x-auth-token', token)
                 .end((err, res) => {
                     res.should.have.status(404);
+                    res.body.should.have.property('success').eq(false);
+                    res.body.should.have.property('msg');
+                    done();
+                })
+        })
+
+        it('It should NOT GET a tweet with invalid token', done => {
+            const id = '60455b92851a2c265cad8d54';
+            chai.request(server)
+                .get('/api/tweets/' + id)
+                .set('x-auth-token', token + 'a')
+                .end((err, res) => {
+                    res.should.have.status(400);
+                    res.body.should.have.property('success').eq(false);
+                    res.body.should.have.property('msg');
+                    done();
+                })
+        })
+
+        it('It should NOT GET a tweet without a token', done => {
+            const id = '60455b92851a2c265cad8d54';
+            chai.request(server)
+                .get('/api/tweets/' + id)
+                .end((err, res) => {
+                    res.should.have.status(401);
                     res.body.should.have.property('success').eq(false);
                     res.body.should.have.property('msg');
                     done();
@@ -63,6 +93,7 @@ describe('Tweets API Tests...', () => {
             }
             chai.request(server)
             .post('/api/tweets')
+            .set('x-auth-token', token)
             .send(newTweet)
             .end((err, res) => {
                 res.should.have.status(201);
@@ -83,6 +114,7 @@ describe('Tweets API Tests...', () => {
             }
             chai.request(server)
             .post('/api/tweets')
+            .set('x-auth-token', token)
             .send(newTweet)
             .end((err, res) => {
                 res.should.have.status(400);
@@ -100,9 +132,43 @@ describe('Tweets API Tests...', () => {
             }
             chai.request(server)
             .post('/api/tweets')
+            .set('x-auth-token', token)
             .send(newTweet)
             .end((err, res) => {
                 res.should.have.status(400);
+                res.body.should.have.property('success').eq(false);
+                res.body.should.have.property('msg');
+                done();
+            })
+        })
+
+        it('It SHOULD NOT POST a tweet without a valid token', done => {
+            const newTweet = {
+                userId: '60456cea3d79f90b50cfddfa',
+                tweetBody: 'Lorem ipsum dolor sit amet, vivamus.',
+            }
+            chai.request(server)
+            .post('/api/tweets')
+            .set('x-auth-token', token + 'a')
+            .send(newTweet)
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('success').eq(false);
+                res.body.should.have.property('msg');
+                done();
+            })
+        })
+
+        it('It SHOULD NOT POST a tweet without a token', done => {
+            const newTweet = {
+                userId: '60456cea3d79f90b50cfddfa',
+                tweetBody: 'Lorem ipsum dolor sit amet, vivamus.',
+            }
+            chai.request(server)
+            .post('/api/tweets')
+            .send(newTweet)
+            .end((err, res) => {
+                res.should.have.status(401);
                 res.body.should.have.property('success').eq(false);
                 res.body.should.have.property('msg');
                 done();
@@ -121,6 +187,7 @@ describe('Tweets API Tests...', () => {
             }
             chai.request(server)
             .put('/api/tweets/' + id)
+            .set('x-auth-token', token)
             .send(tweetToUpdate)
             .end((err, res) => {
                 res.should.have.status(200);
@@ -140,9 +207,43 @@ describe('Tweets API Tests...', () => {
             }
             chai.request(server)
             .put('/api/tweets/' + id)
+            .set('x-auth-token', token)
             .send(tweetToUpdate)
             .end((err, res) => {
                 res.should.have.status(404);
+                res.body.should.have.property('success').eq(false);
+                res.body.should.have.property('msg');
+                done();
+            })
+        })
+
+        it('It SHOULD NOT UPDATE the tweet with invalid token', done => {
+            const id = '604566d7bb61d821184b5043'
+            const tweetToUpdate = {
+                likes: 2,
+            }
+            chai.request(server)
+            .put('/api/tweets/' + id)
+            .set('x-auth-token', token + 'a')
+            .send(tweetToUpdate)
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('success').eq(false);
+                res.body.should.have.property('msg');
+                done();
+            })
+        })
+
+        it('It SHOULD NOT UPDATE the tweet without a token', done => {
+            const id = '604566d7bb61d821184b5043'
+            const tweetToUpdate = {
+                likes: 2,
+            }
+            chai.request(server)
+            .put('/api/tweets/' + id)
+            .send(tweetToUpdate)
+            .end((err, res) => {
+                res.should.have.status(401);
                 res.body.should.have.property('success').eq(false);
                 res.body.should.have.property('msg');
                 done();
@@ -159,6 +260,7 @@ describe('Tweets API Tests...', () => {
         it('It SHOULD DELETE the tweet with valid tweet._id', done => {
             const id = '604566d7bb61d821184b5044';
             chai.request(server)
+            .set('x-auth-token', token)
             .delete('/api/tweets/' + id)
             .end((err, res) => {
                 res.should.have.status(200);
@@ -175,8 +277,34 @@ describe('Tweets API Tests...', () => {
             const id = '604566d7bb61d821184b5043'
             chai.request(server)
             .delete('/api/tweets/' + id)
+            .set('x-auth-token', token)
             .end((err, res) => {
                 res.should.have.status(404);
+                res.body.should.have.property('success').eq(false);
+                res.body.should.have.property('msg');
+                done();
+            })
+        })
+
+        it('It SHOULD NOT DELETE the tweet with invalid token', done => {
+            const id = '604566d7bb61d821184b5043'
+            chai.request(server)
+            .delete('/api/tweets/' + id)
+            .set('x-auth-token', token + 'a')
+            .end((err, res) => {
+                res.should.have.status(400);
+                res.body.should.have.property('success').eq(false);
+                res.body.should.have.property('msg');
+                done();
+            })
+        })
+
+        it('It SHOULD NOT DELETE the tweet without a token', done => {
+            const id = '604566d7bb61d821184b5043'
+            chai.request(server)
+            .delete('/api/tweets/' + id)
+            .end((err, res) => {
+                res.should.have.status(401);
                 res.body.should.have.property('success').eq(false);
                 res.body.should.have.property('msg');
                 done();
