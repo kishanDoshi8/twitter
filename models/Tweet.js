@@ -18,10 +18,8 @@ const CommentSchema = new Schema({
             message: () => `Comment should not exceed of length 280`,
         }
     },
-    likes: {
-        type: Number,
-        default: 0,
-    },
+    // save userId as liked
+    likes: [String],
     comments: [{
         type: ObjectID,
         ref: 'CommentSchema',

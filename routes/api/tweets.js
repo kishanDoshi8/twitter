@@ -38,6 +38,30 @@ router.post('/', auth, (req, res) => {
         .catch(err => res.status(400).json({ success: false, msg: err.message }));
 });
 
+// @route   Post api/tweets/like/:id
+// @Desc    Like a tweet
+// @Access  Private
+router.post('/like/:id', auth, (req, res) => {
+    Tweet.findOneAndUpdate({ _id: req.params.id }, {
+        $addToSet: {
+            likes: req.user.id,
+        }
+    }).then(tweet => res.status(200).json({ success: true, tweet }))
+        .catch(err => res.status(400).json({ success: false, msg: err.message }));
+});
+
+// @route   Post api/tweets/unlike/:id
+// @Desc    Like a tweet
+// @Access  Private
+router.post('/unlike/:id', auth, (req, res) => {
+    Tweet.findOneAndUpdate({ _id: req.params.id }, {
+        $pull: {
+            likes: req.user.id,
+        }
+    }).then(tweet => res.status(200).json({ success: true, tweet }))
+        .catch(err => res.status(400).json({ success: false, msg: err.message }));
+});
+
 // @route   GET api/tweets/comments/:id
 // @Desc    Get all comments of a post by id
 // @Access  Private
