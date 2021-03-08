@@ -31,9 +31,10 @@ router.get('/:id', (req, res) => {
 // @Access  Public
 router.post('/', (req, res) => {
     const newTweet = new Tweet( req.body );
+    // if(req.body.tweetBody.length > 280) return res.status(400).json({ success: false, msg: 'Tweet cannot have more than 280 characters.'})
     newTweet.save()
         .then(tweet => res.status(201).json({ success: true, tweet }))
-        .catch(err => res.status(400).json({ success: false, msg: err }));
+        .catch(err => res.status(400).json({ success: false, msg: err.message }));
 });
 
 // @route   Put api/tweets 
@@ -44,8 +45,8 @@ router.put('/:id', (req, res) => {
         { $set: req.body }, 
         { new: true },
         (err, tweet) => {
-            if(err) return res.status(400).json({ success: false, msg: err });
             if(!tweet) return res.status(404).json({ success: false, msg: `Tweet with id: ${req.params.id} was not found.` });
+            if(err) return res.status(400).json({ success: false, msg: err });
             res.json({ success: true, tweet });
     });
 });
