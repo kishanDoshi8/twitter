@@ -7,7 +7,17 @@ chai.should();
 
 describe('Tweets API Tests...', () => {
 
+    // Change the token if you get unexpected 400 or 401 status..
     const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwNDUyODAzZWJhMmFiM2U2NGJmODU5YyIsImlhdCI6MTYxNTE2NTUyOH0.3-wnM0Pnna9dhJK8hkZZ6p7vMRdy4sgdUEg4hriYU3I';
+    // Token for user
+    // "user": {
+    //     "_id": "60452803eba2ab3e64bf859c",
+    //     "name": "Kishan Doshi",
+    //     "email": "kishan@doshi2.com",
+    //     "password": "$2a$10$3S2z81kRvWMBfMwGKu0A7OI1X4AtsuLpBdhNzAw8DEb.oNKXbvge.",
+    //     "registeredOn": "2021-03-07T19:22:43.031Z",
+    //     "__v": 0
+    // }
 
     /**
      * GET /api/tweets
